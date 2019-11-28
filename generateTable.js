@@ -8,7 +8,7 @@ function createTable(size) {
             if (i == 0 && j == 0) {
                 inputHtml = '<input type="text" ' + ' data-row='+ i + 'data-col=' + j + ' readonly>';
             } else if (i == 0 || j == 0) {
-                inputHtml = '<input type="text" ' + ' id="'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
+                inputHtml = '<input type="text" ' + ' id="сriteria'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
             } else if (i == j) {
                 inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=1 readonly>';
             } else {
@@ -23,7 +23,7 @@ function createTable(size) {
     return table;
 }
 
-function createCriterionTable(size) {
+function createCriterionTable(size, criterionName) {
     var table = $('<table class="table"></table>'); //.addClass('foo');
     var sizeWithNodes = Number(size) + 1;
     for(var i = 0; i < sizeWithNodes; i++){
@@ -31,13 +31,13 @@ function createCriterionTable(size) {
         for(var j = 0; j < sizeWithNodes; j++){
             var inputHtml = '';
             if (i == 0 && j == 0) {
-                inputHtml = '<input type="text" ' + ' data-row='+ i + 'data-col=' + j + ' readonly>';
+                inputHtml = '<input type="text" ' + ' data-row='+ i + 'data-col=' + j + ' value="' + criterionName + '" readonly>';
             } else if (i == 0 || j == 0) {
-                inputHtml = '<input type="text" ' + ' id="'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
+                inputHtml = '<input type="text" ' + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
             } else if (i == j) {
-                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=1 readonly>';
+                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value=1 readonly>';
             } else {
-                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=0>';
+                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + 'data-type="inputCriteria"' + ' value=0>';
             }
 
             var element = $('<td></td>').append(inputHtml);//.text("result" + j + i); //append(input id ij)
@@ -48,12 +48,16 @@ function createCriterionTable(size) {
     return table;
 }
 
-function reflectCriteriaName(inputCriteriaName) {
+function reflectCriteriaName(inputCriteriaName, type) {
     var reflectionCol = $(inputCriteriaName).data('row');
     var reflectionRow = $(inputCriteriaName).data('col');
-    var reflectionId = '#' + reflectionRow + '_' + reflectionCol;
+    var reflectionId = '#' + type + reflectionRow + '_' + reflectionCol;
     $(reflectionId).val($(inputCriteriaName).val());
     console.log($(reflectionId).val());
+}
+
+function showObjectControls() {
+    $('#objects-controll').attr("style","display: block");
 }
 
 //считывает и строит граф, наверное стоит назвать create graph
@@ -72,16 +76,32 @@ $(document).ready(function(){
     her.css("color", "red"); 
     var field = $('#content');
     var table = $('#table');
+    var tableObjects = $('#tables');
     var butCreateTable = $("#createTable");
-    var butCreateGraph = $("#createGraph");
+    var butCreateObjects = $("#createTableObjects");
     butCreateTable.on('click', function () {
         var countNodes = $("#countNodes").val();
         table.html(createTable(countNodes));
-
+        showObjectControls();
         field.on('change', '.сriteriaName', function (e) {
             console.log(e.target);
-            reflectCriteriaName(e.target);
+            reflectCriteriaName(e.target, 'сriteria');
+        });
+
+    });    
+    butCreateObjects.on('click', function () {
+        console.log(123);
+        var countObjects = $("#countObjects").val();
+        console.log($("#countNodes").val());
+        for(var j = 0; j < $("#countNodes").val(); j++){
+            tableObjects.append(createCriterionTable(countObjects, 'Критерий'));
+        }
+        showObjectControls();
+        field.on('change', '.сriteriaName', function (e) {
+            console.log(e.target);
+            reflectCriteriaName(e.target, 'objects');
         });
 
     });
+
 });
