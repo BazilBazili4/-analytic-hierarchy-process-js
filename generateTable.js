@@ -1,3 +1,14 @@
+function createValueInput(className, inputId, row, col, defaultValue) {
+    var input = document.createElement("input");
+    input.setAttribute('class', className);
+    input.setAttribute('id', inputId);
+    input.setAttribute('data-row', row);
+    input.setAttribute('data-col', col);
+    input.setAttribute('value', defaultValue);
+
+    return input;
+}
+
 function createTable(size) {
     var table = $('<table class="table"></table>'); //.addClass('foo');
     var sizeWithNodes = Number(size) + 1;
@@ -10,9 +21,11 @@ function createTable(size) {
             } else if (i == 0 || j == 0) {
                 inputHtml = '<input type="text" ' + ' id="сriteria'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
             } else if (i == j) {
-                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=1 readonly>';
+                inputHtml = '<input type="number" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=1 readonly>';
             } else {
-                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=0>';
+                var inputId = 'сriterium_' + i + '_' + j; 
+                inputHtml = createValueInput('criteriumValue', inputId, i, j);
+                inputHtml = '<input type="number" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=0>';
             }
 
             var element = $('<td></td>').append(inputHtml);//.text("result" + j + i); //append(input id ij)
@@ -35,9 +48,9 @@ function createCriterionTable(size, criterionName) {
             } else if (i == 0 || j == 0) {
                 inputHtml = '<input type="text" ' + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
             } else if (i == j) {
-                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value=1 readonly>';
+                inputHtml = '<input type="text" '  + ' id="objects'+ i + '_' + j + '" class="objectsName"'  + 'data-row='+ i + ' data-col=' + j + ' value=1 readonly>';
             } else {
-                inputHtml = '<input type="text" ' + 'class="inputCriteria"'  + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + 'data-type="inputCriteria"' + ' value=0>';
+                inputHtml = '<input type="text" '  + ' id="objects'+ i + '_' + j + '" class="objectsName"'  + 'data-row='+ i + ' data-col=' + j + 'data-type="inputCriteria"' + ' value=0>';
             }
 
             var element = $('<td></td>').append(inputHtml);//.text("result" + j + i); //append(input id ij)
@@ -53,7 +66,7 @@ function reflectCriteriaName(inputCriteriaName, type) {
     var reflectionRow = $(inputCriteriaName).data('col');
     var reflectionId = '#' + type + reflectionRow + '_' + reflectionCol;
     $(reflectionId).val($(inputCriteriaName).val());
-    console.log($(reflectionId).val());
+    console.log(reflectionId);
 }
 
 function showObjectControls() {
@@ -87,21 +100,18 @@ $(document).ready(function(){
             console.log(e.target);
             reflectCriteriaName(e.target, 'сriteria');
         });
-
     });    
-    butCreateObjects.on('click', function () {
-        console.log(123);
-        var countObjects = $("#countObjects").val();
-        console.log($("#countNodes").val());
-        for(var j = 0; j < $("#countNodes").val(); j++){
-            tableObjects.append(createCriterionTable(countObjects, 'Критерий'));
-        }
-        showObjectControls();
-        field.on('change', '.сriteriaName', function (e) {
-            console.log(e.target);
-            reflectCriteriaName(e.target, 'objects');
-        });
-
-    });
-
+    // butCreateObjects.on('click', function () {
+    //     console.log(123);
+    //     var countObjects = $("#countObjects").val();
+    //     console.log($("#countNodes").val());
+    //     for(var j = 0; j < $("#countNodes").val(); j++){
+    //         tableObjects.append(createCriterionTable(countObjects, 'Критерий'));
+    //     }
+    //     showObjectControls();
+    //     field.on('change', '.objectsName', function (e) {
+    //         console.log(e.target);
+    //         reflectCriteriaName(e.target, 'objects');
+    //     });
+    // });
 });
