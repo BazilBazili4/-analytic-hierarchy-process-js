@@ -92,8 +92,20 @@ function getRandomConsistency(countCriteria) {
     return consistency[countCriteria];
 }
 
-function getLocalPriorityVector(criteria) {
-    return getGeoMean(values);
+function getLocalPriorityVector(criteriaArray) {
+    return criteriaArray.map(
+        function (criterion) {
+            return getGeoMean(criterion.values);
+        }
+    );
+}
+
+function getLocalPriorityVectorNormalized(criteriaArray) {
+    return criteriaArray.map(
+        function (criterion) {
+            return getGeoMean(criterion.values) / getCriteriaTotal(criteriaArray);
+        }
+    );
 }
 
 
