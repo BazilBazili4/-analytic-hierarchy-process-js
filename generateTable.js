@@ -106,6 +106,27 @@ function setCriteriaArray(criteriaCount) {
     }
     return criteriaArray;
 }
+
+function reflectInputValue(input) {
+    var reflectionClass = $(input).attr('class');
+    var reflectionCol = $(input).data('row');
+    var reflectionRow = $(input).data('col');
+    var reflectionId = '#' + reflectionClass + reflectionRow + '_' + reflectionCol;
+    $(reflectionId).val($(input).val());
+}
+
+function reflectCriterionValue(input) {
+    var reflectionClass = $(input).attr('class');
+    var reflectionCol = $(input).data('row');
+    var reflectionRow = $(input).data('col');
+    var reflectionId = '#' + reflectionClass + reflectionRow + '_' + reflectionCol;
+    $(reflectionId).val(1/$(input).val());
+}
+
+function showObjectControls() {
+    $('#objects-controll').attr("style","display: block");
+}
+
 function createCriterionTable(size, criterionName) {
     var table = $('<table class="table"></table>'); //.addClass('foo');
     var sizeWithNodes = Number(size) + 1;
@@ -131,17 +152,6 @@ function createCriterionTable(size, criterionName) {
     return table;
 }
 
-function reflectInputValue(input) {
-    var reflectionClass = $(input).attr('class');
-    var reflectionCol = $(input).data('row');
-    var reflectionRow = $(input).data('col');
-    var reflectionId = '#' + reflectionClass + reflectionRow + '_' + reflectionCol;
-    $(reflectionId).val($(input).val());
-}
-
-function showObjectControls() {
-    $('#objects-controll').attr("style","display: block");
-}
 
 $(document).ready(function(){
     var her = $("h2");
@@ -157,6 +167,9 @@ $(document).ready(function(){
         showObjectControls();
         field.on('change', '.criterionName', function (e) {
             reflectInputValue(e.target);
+        });
+        field.on('change', '.criterionValue', function (e) {
+            reflectCriterionValue(e.target);
         });
     });    
     butCreateObjects.on('click', function () {
