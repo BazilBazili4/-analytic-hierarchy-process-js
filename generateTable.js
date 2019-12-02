@@ -69,6 +69,16 @@ function getCriterionValues(criterionId, criteriaCount) {
     return criterionValues;
 }
 
+function getCriteriaTotal(criteriaArray) {
+    let total = 0;
+    total = criteriaArray.reduce(function(sum, criterion) {
+        return sum + criterion.values.reduce(function(sum, current) {
+            return sum + current;
+        }, 0);      
+    }, 0);          
+    return total;
+}
+
 function getGeoMean(values) {
     let mult = 0;
     for (let index = 0; index < values.length; index += 1) {
@@ -94,7 +104,7 @@ function setCriteriaArray(criteriaCount) {
         criterionValues = getCriterionValues(criterionId, criteriaCount);
         criteriaArray[i] = setCriterion(criterionId, criterionName, criterionValues);
     }
-    console.log(criteriaArray);
+    return criteriaArray;
 }
 function createCriterionTable(size, criterionName) {
     var table = $('<table class="table"></table>'); //.addClass('foo');
@@ -150,7 +160,8 @@ $(document).ready(function(){
         });
     });    
     butCreateObjects.on('click', function () {
-        setCriteriaArray($("#countNodes").val());
+        criteriaArray = setCriteriaArray($("#countNodes").val());
+        getCriteriaTotal(criteriaArray);
         // console.log(123);
         // var countObjects = $("#countObjects").val();
         // console.log($("#countNodes").val());
