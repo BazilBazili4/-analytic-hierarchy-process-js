@@ -69,6 +69,14 @@ function getCriterionValues(criterionId, criteriaCount) {
     return criterionValues;
 }
 
+function getGeoMean(values) {
+    let mult = 0;
+    for (let index = 0; index < values.length; index += 1) {
+        mult *= values[index];
+    }
+    return Math.pow(mult, 1/values.length);
+}
+
 function setCriterion(criterionId = 1, criterionName = '', criterionValues = []) {
     return {
         id: criterionId,
