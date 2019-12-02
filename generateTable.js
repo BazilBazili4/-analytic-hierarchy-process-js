@@ -111,17 +111,6 @@ function showObjectControls() {
     $('#objects-controll').attr("style","display: block");
 }
 
-//считывает и строит граф, наверное стоит назвать create graph
-function readTable(table) {
-    return function() {
-        table.each(function(row){
-            $(this).find('td').each(function(cell){
-                console.log($(this).children().val());
-            });
-        });
-    };
-}
-
 $(document).ready(function(){
     var her = $("h2");
     her.css("color", "red"); 
