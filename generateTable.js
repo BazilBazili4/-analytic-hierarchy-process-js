@@ -54,8 +54,6 @@ function createTable(size) {
 
 function getInputValue(className, row, col) {
     inputIdSelector = '#' + generateInputId(className, row, col);
-    console.log('#' + generateInputId(className, row, col));
-    console.log($(inputIdSelector).val());
     return $(inputIdSelector).val();
 }
 
@@ -68,10 +66,28 @@ function getCriterionValues(criterionId, criteriaCount) {
     for(var i = 0; i < criteriaCount; i++){
         criterionValues[i] = Number(getInputValue('criterionValue', criterionId, i + 1));
     }
-    console.log(criterionValues);
-
+    return criterionValues;
 }
 
+function setCriterion(criterionId = 1, criterionName = '', criterionValues = []) {
+    return {
+        id: criterionId,
+        name: criterionName,
+        values: criterionValues
+    };
+}
+
+
+function setCriteriaArray(criteriaCount) {
+    criteriaArray = [];
+    for(var i = 0; i < criteriaCount; i++){
+        criterionId = i + 1;
+        criterionName = getCriterionName(criterionId);
+        criterionValues = getCriterionValues(criterionId, criteriaCount);
+        criteriaArray[i] = setCriterion(criterionId, criterionName, criterionValues);
+    }
+    console.log(criteriaArray);
+}
 function createCriterionTable(size, criterionName) {
     var table = $('<table class="table"></table>'); //.addClass('foo');
     var sizeWithNodes = Number(size) + 1;
@@ -102,8 +118,6 @@ function reflectInputValue(input) {
     var reflectionCol = $(input).data('row');
     var reflectionRow = $(input).data('col');
     var reflectionId = '#' + reflectionClass + reflectionRow + '_' + reflectionCol;
-    console.log(reflectionId);
-
     $(reflectionId).val($(input).val());
 }
 
@@ -124,12 +138,11 @@ $(document).ready(function(){
         table.html(createTable(countNodes));
         showObjectControls();
         field.on('change', '.criterionName', function (e) {
-            console.log(e.target);
             reflectInputValue(e.target);
         });
     });    
     butCreateObjects.on('click', function () {
-        getCriterionValues(1, $("#countNodes").val());
+        setCriteriaArray($("#countNodes").val());
         // console.log(123);
         // var countObjects = $("#countObjects").val();
         // console.log($("#countNodes").val());
