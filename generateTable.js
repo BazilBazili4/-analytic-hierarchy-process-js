@@ -1,3 +1,24 @@
+function getConfig(params) {
+    return {
+        criteriaHeader: 'criterionName',
+        criteriaValue: 'criterionValue',
+        objectsHeader: 'objectName',
+        objectValue: 'objectValue',
+        getCriteriaHeaderClassSelector() {
+            return '.' + this.criteriaHeader;
+        },
+        getCriteriaValueClassSelector() {
+            return '.' + this.criteriaValue;
+        },
+        getObjectHeaderClassSelector() {
+            return '.' + this.objectsHeader;
+        },
+        getObjectValueClassSelector() {
+            return '.' + this.objectValue;
+        }
+    }
+}
+
 function createInput(className, inputId, row, col, defaultValue) {
     var input = document.createElement("input");
     input.setAttribute('class', className);
@@ -20,7 +41,7 @@ function createVoidInput() {
     return input;
 }
 
-function createTable(size) {
+function createTable(size, headersClass, valuesClass, tableName = '') {
     var table = $('<table class="table"></table>'); //.addClass('foo');
     var sizeWithNodes = Number(size) + 1;
     for(var i = 0; i < sizeWithNodes; i++){
@@ -28,19 +49,19 @@ function createTable(size) {
         for(var j = 0; j < sizeWithNodes; j++){
             var inputHtml = '';1
             if (i == 0 && j == 0) {
-                inputHtml = '';
+                inputHtml = tableName;
                 // inputHtml = '<input type="text" ' + ' data-row='+ i + 'data-col=' + j + ' readonly>';
             } else if (i == 0 || j == 0) {
-                var inputId = generateInputId('criterionName', i, j); 
-                inputHtml = createInput('criterionName', inputId, i, j, 'Название');
+                var inputId = generateInputId(headersClass, i, j); 
+                inputHtml = createInput(headersClass, inputId, i, j, 'Название');
                 // inputHtml = '<input type="text" ' + ' id="сriteria'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
             } else if (i == j) {
-                var inputId = generateInputId('criterionValue', i, j); 
-                inputHtml = createInput('criterionValue', inputId, i, j, 1);
+                var inputId = generateInputId(valuesClass, i, j); 
+                inputHtml = createInput(valuesClass, inputId, i, j, 1);
                 inputHtml.setAttribute('readonly', 'readonly');                ;
             } else {
-                var inputId = generateInputId('criterionValue', i, j); 
-                inputHtml = createInput('criterionValue', inputId, i, j, 0);
+                var inputId = generateInputId(valuesClass, i, j); 
+                inputHtml = createInput(valuesClass, inputId, i, j, 0);
                 // inputHtml = '<input type="number" ' + 'class="inputCriteria"'  + 'data-type="inputCriteria"' + ' value=0>';
             }
 
@@ -80,10 +101,12 @@ function getCriteriaTotal(criteriaArray) {
 }
 
 function getGeoMean(values) {
-    let mult = 0;
+    let mult = 1;
     for (let index = 0; index < values.length; index += 1) {
         mult *= values[index];
     }
+    console.log(mult);
+
     return Math.pow(mult, 1/values.length);
 }
 
@@ -149,33 +172,9 @@ function showObjectControls() {
     $('#objects-controll').attr("style","display: block");
 }
 
-function createCriterionTable(size, criterionName) {
-    var table = $('<table class="table"></table>'); //.addClass('foo');
-    var sizeWithNodes = Number(size) + 1;
-    for(var i = 0; i < sizeWithNodes; i++){
-        var row = $('<tr></tr>');//.text('result ' + i);
-        for(var j = 0; j < sizeWithNodes; j++){
-            var inputHtml = '';
-            if (i == 0 && j == 0) {
-                inputHtml = '<input type="text"сriteriaName ' + ' data-row='+ i + 'data-col=' + j + ' value="' + criterionName + '" readonly>';
-            } else if (i == 0 || j == 0) {
-                inputHtml = '<input type="text" ' + ' id="objects'+ i + '_' + j + '" class="сriteriaName"'  + 'data-row='+ i + ' data-col=' + j + ' value="Название">';
-            } else if (i == j) {
-                inputHtml = '<input type="text" '  + ' id="objects'+ i + '_' + j + '" class="objectsName"'  + 'data-row='+ i + ' data-col=' + j + ' value=1 readonly>';
-            } else {
-                inputHtml = '<input type="text" '  + ' id="objects'+ i + '_' + j + '" class="objectsName"'  + 'data-row='+ i + ' data-col=' + j + 'data-type="inputCriteria"' + ' value=0>';
-            }
-
-            var element = $('<td></td>').append(inputHtml);//.text("result" + j + i); //append(input id ij)
-            row.append(element);
-        }
-        table.append(row);
-    }
-    return table;
-}
-
 
 $(document).ready(function(){
+    var config = getConfig();
     var her = $("h2");
     her.css("color", "red"); 
     var field = $('#content');
@@ -185,7 +184,7 @@ $(document).ready(function(){
     var butCreateObjects = $("#createTableObjects");
     butCreateTable.on('click', function () {
         var countNodes = $("#countNodes").val();
-        table.html(createTable(countNodes));
+        table.html(createTable(countNodes, config.criteriaHeader, config.criteriaValue));
         showObjectControls();
         field.on('change', '.criterionName', function (e) {
             reflectInputValue(e.target);
@@ -196,8 +195,10 @@ $(document).ready(function(){
     });    
     butCreateObjects.on('click', function () {
         criteriaArray = setCriteriaArray($("#countNodes").val());
+
         getCriteriaTotal(criteriaArray);
-        // console.log(123);
+        console.log(getLocalPriorityVector(criteriaArray));
+        console.log(getLocalPriorityVectorNormalized(criteriaArray));
         // var countObjects = $("#countObjects").val();
         // console.log($("#countNodes").val());
         // for(var j = 0; j < $("#countNodes").val(); j++){
