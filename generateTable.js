@@ -87,6 +87,16 @@ function getGeoMean(values) {
     return Math.pow(mult, 1/values.length);
 }
 
+function getRandomConsistency(countCriteria) {
+    const consistency = [0, 0, 0, 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49];
+    return consistency[countCriteria];
+}
+
+function getLocalPriorityVector(criteria) {
+    return getGeoMean(values);
+}
+
+
 function setCriterion(criterionId = 1, criterionName = '', criterionValues = []) {
     return {
         id: criterionId,
